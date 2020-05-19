@@ -176,11 +176,11 @@ Stop:
 
 	stop = True
 	if button != None
-		hotkey, %button%, buttonhotkey, *~$ off
+		hotkey, *~$%button%, buttonhotkey, off
 	if button1 != None
-		hotkey, %button1%, buttonhotkey1, *~$ off
+		hotkey, *~$%button1%, buttonhotkey1, off
 	if button2 != None
-		hotkey, %button2%, buttonhotkey2, *~$ off
+		hotkey, *~$%button2%, buttonhotkey2, off
 	guicontrol,disable, stp
 	return
 
@@ -205,11 +205,11 @@ Start:
 	if clicktype3 = Double 
 		clicktype3 := 2
 	if button != None
-		hotkey, %button%, buttonhotkey, *~$ on
+		hotkey, *~$%button%, buttonhotkey, on
 	if button1 != None
-		hotkey, %button1%, buttonhotkey1, *~$ on
+		hotkey, *~$%button1%, buttonhotkey1, on
 	if button2 != None
-		hotkey, %button2%, buttonhotkey2, *~$ on
+		hotkey, *~$%button2%, buttonhotkey2, on
 
 	buttonhotkey:
 		While GetKeyState(button, "P"){
