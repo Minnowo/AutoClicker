@@ -3,6 +3,8 @@ setBatchLines -1
 SetMouseDelay,-1
 SetControlDelay, -1
 
+
+
 gui, +alwaysontop
 gui, add, text, x10 y10 , Mouse Button
 gui, add, text, x90 y10 , Hold Button
@@ -13,25 +15,25 @@ gui, add, text, x52 y40 , Left :
 gui, add, text, x45 y+17,  Right :
 gui, add, text, x39 y+17,  Middle :
 
-gui, add, dropdownlist, xm+80 ym+30 w100 r10 vButton gFirstButton, None||Left|Right|Middle|xButton1|xbutton2|
-gui, add, dropdownlist, xm+80 ym+60 w100 r10 vButton1 gSecondButton, None||Left|Right|Middle|xButton1|xbutton2|
-gui, add, dropdownlist, xm+80 ym+90 w100 r10 vButton2 gThirdButton, None||Left|Right|Middle|xButton1|xbutton2|
+gui, add, dropdownlist, xm+80 ym+30 w100 r10 vButton gFirstButton, None||Left|Right|Middle|xButton1|xButton2|
+gui, add, dropdownlist, xm+80 ym+60 w100 r10 vButton1 gSecondButton, None||Left|Right|Middle|xButton1|xButton2|
+gui, add, dropdownlist, xm+80 ym+90 w100 r10 vButton2 gThirdButton, None||Left|Right|Middle|xButton1|xButton2|
 gui, add, dropdownlist, xm+200 ym+30 w100 r10 vClicktype1 gFirstButtonclicktype, Single||Double|
 gui, add, dropdownlist, xm+200 ym+60 w100 r10 vClicktype2 gSecondButtonclicktype, Single||Double|
 gui, add, dropdownlist, xm+200 ym+90 w100 r10 vClicktype3 gThirdButtonclicktype, Single||Double|
 
 gui, add, edit, xm+320 ym+30 w50 vMinSleep gMinSleep Number, 
-Gui, Add, UpDown, Range1-1000, 30
+Gui, Add, UpDown, Range0-1000, 30
 gui, add, edit, xm+390 ym+30  w50 vMaxSleep gMaxSleep Number, 
-Gui, Add, UpDown, Range1-1000,60
+Gui, Add, UpDown, Range0-1000,60
 gui, add, edit, xm+320 ym+60 w50 vMinSleep1 gMinSleep1 Number, 
-Gui, Add, UpDown, Range1-1000, 30
+Gui, Add, UpDown, Range0-1000, 30
 gui, add, edit, xm+390 ym+60  w50 vMaxSleep1 gMaxSleep1 Number, 
-Gui, Add, UpDown, Range1-1000,60
+Gui, Add, UpDown, Range0-1000,60
 gui, add, edit, xm+320 ym+90 w50 vMinSleep2 gMinSleep2 Number, 
-Gui, Add, UpDown, Range1-1000, 30
+Gui, Add, UpDown, Range0-1000, 30
 gui, add, edit, xm+390 ym+90  w50 vMaxSleep2 gMaxSleep2 Number, 
-Gui, Add, UpDown, Range1-1000,60
+Gui, Add, UpDown, Range0-1000,60
  
 gui, add, button, xm+79  ym+119 w102 vstr gStart,  Start
 gui, add, button, xm+199  ym+119 w102 vstp gStop, Stop
@@ -49,6 +51,8 @@ guicontrol,disable, tmr
 clicktype1 = 1
 clicktype2 = 1
 clicktype3 = 1
+Clicktype4 = 1
+loop_Clicker = 0
 timeron := False
 return
 
@@ -57,6 +61,7 @@ GuiClose:
 	return
 Reload:
     Reload
+
 MinSleep:
 	gui, submit, nohide
 	MinSleep = % MinSleep
@@ -81,6 +86,7 @@ MaxSleep2:
 	gui, submit, nohide
 	MaxSleep2 = % MaxSleep2
 	return
+
 FirstButton:
 	gui, submit, nohide
 	button =  % Button
@@ -138,13 +144,18 @@ ThirdButtonclicktype:
 	if clicktype3 = Double 
 		clicktype3 := 2
 	return
+
 seconds1:
 	guicontrol,enable, tmr
 	time := -1000
+	second5 := False
+	second1 := True
 	return
 seconds5:
 	guicontrol,enable, tmr
 	time := -5000
+	second5 := True
+	second1 := False
 	return
 onclick:
 	totalclicks += 1
@@ -152,20 +163,22 @@ onclick:
 		;tooltip, start timer
 		SetTimer, timerstop, %time%
 		timeron := True
-		} else {
-		tooltip, %totalclicks%
-		SetTimer, RemoveToolTip, -2000
 		}
 	return
 RemoveToolTip:
 	totalclicks := 0
 	ToolTip
 	return
+
 timerstop:
+	;tooltip, %second1% %second5%
+	guicontrol,disable, tmr
+	if second1 = 1
+		msgbox, % totalclicks " Clicks/Second"
+	if second5 = 1
+		msgbox, % totalclicks " Clicks In 5 Seconds Or " totalclicks // 5 " CPS"
 	timeron := False
 	totalclicks := 0
-	guicontrol,disable, tmr
-	sleep, 2000
 	guicontrol,enable, tmr
 	return
 Stop:
@@ -173,14 +186,20 @@ Stop:
 	guicontrol,enable, button
 	guicontrol,enable, button1
 	guicontrol,enable, button2
+	guicontrol,enable, MinSleep
+	guicontrol,enable, MaxSleep
+	guicontrol,enable, MinSleep1
+	guicontrol,enable, MaxSleep1
+	guicontrol,enable, MinSleep2
+	guicontrol,enable, MaxSleep2
 
 	stop = True
 	if button != None
-		hotkey, *~$%button%, buttonhotkey, off
+		hotkey, %button%, buttonhotkey, *~$ off
 	if button1 != None
-		hotkey, *~$%button1%, buttonhotkey1, off
+		hotkey, %button1%, buttonhotkey1, *~$ off
 	if button2 != None
-		hotkey, *~$%button2%, buttonhotkey2, off
+		hotkey, %button2%, buttonhotkey2, *~$ off
 	guicontrol,disable, stp
 	return
 
@@ -191,6 +210,12 @@ Start:
 	guicontrol,disable, button
 	guicontrol,disable, button1
 	guicontrol,disable, button2
+	guicontrol,disable, MinSleep
+	guicontrol,disable, MaxSleep
+	guicontrol,disable, MinSleep1
+	guicontrol,disable, MaxSleep1
+	guicontrol,disable, MinSleep2
+	guicontrol,disable, MaxSleep2
 
 	if clicktype1 = Single
 		clicktype1 := 1
@@ -205,11 +230,11 @@ Start:
 	if clicktype3 = Double 
 		clicktype3 := 2
 	if button != None
-		hotkey, *~$%button%, buttonhotkey, on
+		hotkey, %button%, buttonhotkey, *~$ on
 	if button1 != None
-		hotkey, *~$%button1%, buttonhotkey1, on
+		hotkey, %button1%, buttonhotkey1, *~$ on
 	if button2 != None
-		hotkey, *~$%button2%, buttonhotkey2, on
+		hotkey, %button2%, buttonhotkey2, *~$ on
 
 	buttonhotkey:
 		While GetKeyState(button, "P"){
