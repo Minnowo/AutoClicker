@@ -13,9 +13,9 @@ gui, add, text, x52 y40 , Left :
 gui, add, text, x45 y+17,  Right :
 gui, add, text, x39 y+17,  Middle :
 
-gui, add, dropdownlist, xm+80 ym+30 w100 r10 vButton gFirstButton, None||Middle|xButton1|xbutton2|
-gui, add, dropdownlist, xm+80 ym+60 w100 r10 vButton1 gSecondButton, None||Middle|xButton1|xbutton2|
-gui, add, dropdownlist, xm+80 ym+90 w100 r10 vButton2 gThirdButton, None||Left|Right|xButton1|xbutton2|
+gui, add, dropdownlist, xm+80 ym+30 w100 r10 vButton gFirstButton, None||Left|Right|Middle|xButton1|xbutton2|
+gui, add, dropdownlist, xm+80 ym+60 w100 r10 vButton1 gSecondButton, None||Left|Right|Middle|xButton1|xbutton2|
+gui, add, dropdownlist, xm+80 ym+90 w100 r10 vButton2 gThirdButton, None||Left|Right|Middle|xButton1|xbutton2|
 gui, add, dropdownlist, xm+200 ym+30 w100 r10 vClicktype1 gFirstButtonclicktype, Single||Double|
 gui, add, dropdownlist, xm+200 ym+60 w100 r10 vClicktype2 gSecondButtonclicktype, Single||Double|
 gui, add, dropdownlist, xm+200 ym+90 w100 r10 vClicktype3 gThirdButtonclicktype, Single||Double|
@@ -51,6 +51,7 @@ clicktype2 = 1
 clicktype3 = 1
 timeron := False
 return
+
 GuiClose:
 	Exitapp
 	return
@@ -83,20 +84,34 @@ MaxSleep2:
 FirstButton:
 	gui, submit, nohide
 	button =  % Button
+	if button = Left
+		button = LButton
+	if button = Right
+		button = RButton
 	if button = Middle
 		button = MButton
-
+	
 	return
 	
 SecondButton:
 	gui, submit, nohide
 	button1 = % Button1
+	if button1 = Left
+		button1 = LButton
+	if button1 = Right
+		button1 = RButton
 	if button1 = Middle
 		button1 = MButton
 	return
 ThirdButton:
 	gui, submit, nohide
 	button2 = % Button2
+	if button2 = Left
+		button2 = LButton
+	if button2 = Right
+		button2 = RButton
+	if button2 = Middle
+		button2 = MButton
 	return
 
 FirstButtonclicktype:
@@ -155,13 +170,28 @@ timerstop:
 	return
 Stop:
 	guicontrol,enable, str
+	guicontrol,enable, button
+	guicontrol,enable, button1
+	guicontrol,enable, button2
+
 	stop = True
+	if button != None
+		hotkey, %button%, buttonhotkey, *~$ off
+	if button1 != None
+		hotkey, %button1%, buttonhotkey1, *~$ off
+	if button2 != None
+		hotkey, %button2%, buttonhotkey2, *~$ off
 	guicontrol,disable, stp
 	return
+
 Start:
-	WinMinimize, A
+	;WinMinimize, A
 	guicontrol,enable, stp
 	guicontrol,disable, str
+	guicontrol,disable, button
+	guicontrol,disable, button1
+	guicontrol,disable, button2
+
 	if clicktype1 = Single
 		clicktype1 := 1
 	if clicktype1 = Double 
@@ -174,26 +204,31 @@ Start:
 		clicktype3 := 1
 	if clicktype3 = Double 
 		clicktype3 := 2
-	loop{
-		if(%stop% = True){
-			stop = False
-			break
-		}
-		While GetKeyState(button, "D"){
+	if button != None
+		hotkey, %button%, buttonhotkey, *~$ on
+	if button1 != None
+		hotkey, %button1%, buttonhotkey1, *~$ on
+	if button2 != None
+		hotkey, %button2%, buttonhotkey2, *~$ on
+
+	buttonhotkey:
+		While GetKeyState(button, "P"){
 			mouseclick, left, , , %clicktype1%
 			random, x, %MinSleep%, %MaxSleep%
 			sleep, %x%
 		}
-		While GetKeyState(button1, "D"){
+		return
+	buttonhotkey1:
+		While GetKeyState(button1, "P"){
 			mouseclick, right, , , %clicktype2%
 			random, y, %MinSleep1%, %MaxSleep1%
 			sleep, %y%
 		}
-		While GetKeyState(button2, "D"){
+		return
+	buttonhotkey2:
+		While GetKeyState(button2, "P"){
 			mouseclick, middle, , , %clicktype3%
 			random, z, %MinSleep2%, %MaxSleep2%
 			sleep, %z%
 		}
-	}
 		return
-	return
