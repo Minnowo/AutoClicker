@@ -174,9 +174,9 @@ timerstop:
 	;tooltip, %second1% %second5%
 	guicontrol,disable, tmr
 	if second1 = 1
-		msgbox, % totalclicks " Clicks/Second"
+		msgbox,262144,, % totalclicks " Clicks/Second", 10
 	if second5 = 1
-		msgbox, % totalclicks " Clicks In 5 Seconds Or " totalclicks // 5 " CPS"
+		msgbox,262144,, % totalclicks " Clicks In 5 Seconds Or " totalclicks // 5 " CPS", 10
 	timeron := False
 	totalclicks := 0
 	guicontrol,enable, tmr
