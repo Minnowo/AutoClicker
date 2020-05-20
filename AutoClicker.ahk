@@ -3,17 +3,20 @@ setBatchLines -1
 SetMouseDelay,-1
 SetControlDelay, -1
 
-
-
 gui, +alwaysontop
-gui, add, text, x10 y10 , Mouse Button
-gui, add, text, x90 y10 , Hold Button
-gui, add, text, x210 y10 , Click Type
-gui, add, text, x330 y10 , Min Delay
-gui, add, text, x400 y10 , Max Delay
+gui, add, text, x10 y20 , Mouse Button
+gui, add, text, x90 y20 , Hold Button
+gui, add, text, x210 y20 , Click Type
+gui, add, text, x330 y20 , Min Delay
+gui, add, text, x400 y20 , Max Delay
 gui, add, text, x52 y40 , Left :
 gui, add, text, x45 y+17,  Right :
 gui, add, text, x39 y+17,  Middle :
+
+Gui, Add, CheckBox, x10 y0 vAlways Checked gAlways_On_Top, Always On Top
+Gui, Add, CheckBox, x+10 y0 vHide_On_Start gHide_When_Started, Hide When Started
+gui, add, text, x+10 y0, Ctrl+P : Pause
+gui, add, text, x+10 y0, Ctrl+Esc : Exit
 
 gui, add, dropdownlist, xm+80 ym+30 w100 r10 vButton gFirstButton, None||Left|Right|Middle|xButton1|xButton2|
 gui, add, dropdownlist, xm+80 ym+60 w100 r10 vButton1 gSecondButton, None||Left|Right|Middle|xButton1|xButton2|
@@ -35,16 +38,16 @@ Gui, Add, UpDown, Range0-1000, 30
 gui, add, edit, xm+390 ym+90  w50 vMaxSleep2 gMaxSleep2 Number, 
 Gui, Add, UpDown, Range0-1000,60
  
-gui, add, button, xm+79  ym+119 w102 vstr gStart,  Start
-gui, add, button, xm+199  ym+119 w102 vstp gStop, Stop
-gui, add, button, xm+319  ym+119  w122 gReload, Reload
-gui, add, button, x0 ym+130   vtmr gonclick, click me
-gui, add, button, x0 ym+110 w25 gseconds1, 1s
-gui, add, button, x+0 ym+110 w25 gseconds5, 5s
+gui, add, button, xm+79  ym+129 w102 vstr gStart,  Start
+gui, add, button, xm+199  ym+129 w102 vstp gStop, Stop
+gui, add, button, xm+319  ym+129  w122 gReload, Reload
+gui, add, button, x0 ym+140   vtmr gonclick, click me
+gui, add, button, x0 ym+120 w25 gseconds1, 1s
+gui, add, button, x+0 ym+120 w25 gseconds5, 5s
 
 widthspawn := A_screenwidth-548
 heightspawn:= A_screenheight-652
-gui, show, x%widthspawn% y%heightspawn% w500 h159, AutoClicker
+gui, show, x%widthspawn% y%heightspawn% w500 h169, AutoClicker
 guicontrol,disable, stp
 guicontrol,disable, tmr
 
@@ -61,6 +64,20 @@ GuiClose:
 	return
 Reload:
     Reload
+Always_On_Top:         
+	Gui, Submit, NoHide
+	if(Always==1)
+			Gui, +AlwaysOnTop
+	if(Always==0)
+			Gui, -AlwaysOnTop
+	return
+Hide_When_Started:
+	Gui, Submit, NoHide
+	if(Hide_On_Start==1)
+			Gui, +AlwaysOnTop
+	if(Hide_On_Start==0)
+			Gui, -AlwaysOnTop
+	return
 
 MinSleep:
 	gui, submit, nohide
@@ -173,10 +190,16 @@ RemoveToolTip:
 timerstop:
 	;tooltip, %second1% %second5%
 	guicontrol,disable, tmr
+	if(Always==1)
+		alwaystop := 262144
+	if(Always==0)
+		alwaystop := 0
+	suspend, on
 	if second1 = 1
-		msgbox,262144,, % totalclicks " Clicks/Second", 10
+		msgbox, % alwaystop ,Hotkeys are suspended while this is open, % totalclicks " Clicks/Second", 10
 	if second5 = 1
-		msgbox,262144,, % totalclicks " Clicks In 5 Seconds Or " totalclicks // 5 " CPS", 10
+		msgbox, % alwaystop ,Hotkeys are suspended while this is open, % totalclicks " Clicks In 5 Seconds Or " totalclicks // 5 " CPS", 10
+	suspend, off
 	timeron := False
 	totalclicks := 0
 	guicontrol,enable, tmr
@@ -216,7 +239,8 @@ Start:
 	guicontrol,disable, MaxSleep1
 	guicontrol,disable, MinSleep2
 	guicontrol,disable, MaxSleep2
-
+	if(Hide_On_Start==1)
+		WinMinimize, A
 	if clicktype1 = Single
 		clicktype1 := 1
 	if clicktype1 = Double 
@@ -257,3 +281,6 @@ Start:
 			sleep, %z%
 		}
 		return
+;^p::Pause
+^p::Suspend
+^esc::exitapp
