@@ -64,7 +64,8 @@ Gui, 1:add, button, x+0 ym+120 w25 gseconds5, 5s
 
 widthspawn := A_screenwidth-548
 heightspawn:= A_screenheight-652
-Gui, 1:show, x%widthspawn% y%heightspawn% w500 h169, AutoClicker
+;Gui, 1:show, x%widthspawn% y%heightspawn% w500 h169, AutoClicker - By Minnowo
+Gui, 1:show, w500 h169, AutoClicker - By Minnowo
 guicontrol,1:disable, stp
 guicontrol,1:disable, tmr
 clicktype1 = 1
@@ -82,7 +83,7 @@ keep_looping := 1
 keep_looping1 := 1
 keep_looping2 := 1
 timeron := False
-
+hotkey, ^h, hide_win_hotkey,  on
 return
 
 GuiClose:
@@ -110,15 +111,89 @@ ghost_mode:
 		gui,2:Destroy 
 		wingetpos, x1, y1, , , A 
 		gui,2:+alwaysontop -caption +owner1
-		gui,2:add, button, x10 ym+0 gset_window, set window
-		Gui,2:add,Edit,x+10 w200 vTarget_Window ,% Target_Window
-		Gui,2:add,Button,x+10 gUpdate_Window,Update
-		gui,2:show, % "x" x1+ghost_window_offsetx "y" y1+ghost_window_offsety "w"+ghost_window_width "h"+ ghost_window_height, Ghost Window
+		Gui,2:add,Edit,xm+80 ym+1 w220 h21  vTarget_Window ,% Target_Window
+		Gui,2:add,Edit,xm+80 ym+30 w220 h21  vPos_1 ,% Pos_1
+		gui,2:add, button, x10 ym+0 gset_window, Set Window
+		gui,2:add, button, x10 ym+30 w70 gset_pos, Set Pos
+		Gui,2:add,Button,xm+319 ym+0 w61 gUpdate_Window,Update
+		Gui,2:add,Button,xm+380 ym+0 w61 gClear_Target_Window,Clear
+		Gui,2:add,Button,xm+319 ym+30 w122 gClear_Pos,Clear
+		Gui,2:add,Button,xm+250 ym+75 w122 gmovemouse,move mouse
+		Gui,2:add,Button,xm+0 ym+90 w122 gHide_Window,Hide/Show Window
+		Gui,2:add, checkbox, x10 ym+65 checked vhidewin gHide_Window_Hotkey, Show/Hide Ctrl + H
+		Gui,2:add, checkbox, x+10 ym+65 vghost_clicking gGhost_Clicking_Toggle, Enable Ghost Clicking
+		
+		gui,2:show, % "x" x1+ghost_window_offsetx "y" y1+ghost_window_offsety "w"+ghost_window_width "h"+ ghost_window_height, Super Secret Ghost Window Very Stealth TeeHee
 		ghost_mode_active := True
 		}
 	if(ghost_mode==0)
 		gui,2:Destroy
 		ghost_mode_active := False
+	return
+set_pos:
+    Get_Click_Pos(X1,Y1)       
+    GuiControl,,Pos_1,%X1%   %Y1%  
+    return
+Ghost_Clicking_Toggle:
+	Gui, 2:Submit, NoHide 
+    return
+Hide_Window:
+	WinGet, Style, Style,  %Target_Window% 
+	a = AutoClicker - By Minnowo
+	if (Target_Window = a){
+		If (Style & 0x10000000){
+			if(Target_Window!=null)
+				WinHide,%Target_Window%
+				WinHide, Super Secret Ghost Window Very Stealth TeeHee
+		} else {
+			if(Target_Window!=null)
+				WinShow,%Target_Window%
+				WinShow, Super Secret Ghost Window Very Stealth TeeHee
+		}
+	} else {
+		WinGet, Style, Style,  %Target_Window%
+		If (Style & 0x10000000){
+			if(Target_Window!=null)
+				WinHide,%Target_Window%
+		} else {
+			if(Target_Window!=null)
+				WinShow,%Target_Window%
+		}
+	}
+	return
+Hide_Window_Hotkey:
+	Gui, 2:Submit, NoHide
+	if (hidewin == 1){
+		hotkey, ^h, hide_win_hotkey,  on
+	}
+	if (hidewin == 0){
+		hotkey, ^h, hide_win_hotkey,  off
+	}
+	return
+hide_win_hotkey:
+	WinGet, Style, Style,  %Target_Window% 
+	a = AutoClicker - By Minnowo
+	if (Target_Window = a){
+		If (Style & 0x10000000){
+			if(Target_Window!=null)
+				WinHide,%Target_Window%
+				WinHide, Super Secret Ghost Window Very Stealth TeeHee
+		} else {
+			if(Target_Window!=null)
+				WinShow,%Target_Window%
+				WinShow, Super Secret Ghost Window Very Stealth TeeHee
+		}
+	} else {
+		WinGet, Style, Style,  %Target_Window%
+		If (Style & 0x10000000){
+			if(Target_Window!=null)
+				WinHide,%Target_Window%
+		} else {
+			if(Target_Window!=null)
+				WinShow,%Target_Window%
+		}
+	}
+	
 	return
 Toggle:
 	Gui,1:Submit,NoHide
@@ -126,6 +201,21 @@ Toggle:
 Update_Window:
     Gui,Submit,NoHide
     return
+Clear_Target_Window:
+	Gui,2:Submit,NoHide
+	Target_Window := null 
+	guicontrol,, Target_Window, % Target_Window
+	return
+Clear_Pos:
+	Gui,2:Submit,NoHide
+	X1 := null 
+	Y1 := null
+	guicontrol,, Pos_1, %X1%   %Y1%  
+	return
+movemouse:
+	Gui,2:Submit,NoHide
+	ControlClick,x%X1% y%Y1%,%Target_Window%,,,, NA x%X1% y%Y1%
+	return
 MinSleep:
 	gui, 1:submit, nohide
 	MinSleep = % MinSleep
@@ -319,10 +409,18 @@ Start:
 	buttonhotkey:
 		global stop
 		if (toggle == 0){
-			While GetKeyState(button, "P"){
-				mouseclick, left, , , %clicktype1%
-				random, x, %MinSleep%, %MaxSleep%
-				sleep, %x%
+			if (ghost_clicking == 1){
+				While GetKeyState(button, "P"){
+					ControlClick,x%X1% y%Y1%,%Target_Window%,,LEFT,%clicktype1%, NA x%X1% y%Y1%
+					random, x, %MinSleep%, %MaxSleep%
+					sleep, %x%
+				}
+			} else {
+				While GetKeyState(button, "P"){
+					mouseclick, left, , , %clicktype1%
+					random, x, %MinSleep%, %MaxSleep%
+					sleep, %x%
+				}
 			}
 		} 
 		else if (toggle == 1){
@@ -335,18 +433,35 @@ Start:
 			else {
 				keep_looping := 0
 				}
-			while (keep_looping == 1 && stop == False)
-			{
-				mouseclick, left, , , %clicktype1%
-				random, x, %MinSleep%, %MaxSleep%
-				sleep, %x%
-				getkeystate, state, %button%
-				if (state == "D" && up == True){
-					keep_looping := 0
-					sleep, 1000
+			if (ghost_clicking = 1){
+				while (keep_looping == 1 && stop == False)
+				{
+					ControlClick,x%X1% y%Y1%,%Target_Window%,,LEFT,%clicktype1%, NA x%X1% y%Y1%
+					random, x, %MinSleep%, %MaxSleep%
+					sleep, %x%
+					getkeystate, state, %button%
+					if (state == "D" && up == True){
+						keep_looping := 0
+						sleep, 1000
+					}
+					if (state == "U"){
+						up := True
+					}
 				}
-				if (state == "U"){
-					up := True
+			} else {
+				while (keep_looping == 1 && stop == False)
+				{
+					mouseclick, left, , , %clicktype1%
+					random, x, %MinSleep%, %MaxSleep%
+					sleep, %x%
+					getkeystate, state, %button%
+					if (state == "D" && up == True){
+						keep_looping := 0
+						sleep, 1000
+					}
+					if (state == "U"){
+						up := True
+					}
 				}
 			}
 		}
@@ -354,10 +469,18 @@ Start:
 	buttonhotkey1:
 		global stop
 		if (toggle == 0){
-			While GetKeyState(button1, "P"){
-				mouseclick, right, , , %clicktype2%
-				random, y, %MinSleep1%, %MaxSleep1%
-				sleep, %y%
+			if (ghost_clicking = 1){
+				While GetKeyState(button1, "P"){
+					ControlClick,x%X1% y%Y1%,%Target_Window%,,RIGHT,%clicktype2%, NA x%X1% y%Y1%
+					random, y, %MinSleep1%, %MaxSleep1%
+					sleep, %y%
+				}
+			} else {
+				While GetKeyState(button1, "P"){
+					mouseclick, right, , , %clicktype2%
+					random, y, %MinSleep1%, %MaxSleep1%
+					sleep, %y%
+				}
 			}
 		}
 		else if (toggle == 1){
@@ -370,18 +493,35 @@ Start:
 			else {
 				keep_looping1 := 0
 				}
-			while (keep_looping1 == 1 && stop == False)
-			{
-				mouseclick, right, , , %clicktype2%
-				random, y, %MinSleep1%, %MaxSleep1%
-				sleep, %y%
-				getkeystate, state1, %button1%
-				if (state1 == "D" && up == True){
-					keep_looping1 := 0
-					sleep, 1000
+			if (ghost_clicking = 1){
+				while (keep_looping1 == 1 && stop == False)
+				{
+					ControlClick,x%X1% y%Y1%,%Target_Window%,,RIGHT,%clicktype2%, NA x%X1% y%Y1%
+					random, y, %MinSleep1%, %MaxSleep1%
+					sleep, %y%
+					getkeystate, state1, %button1%
+					if (state1 == "D" && up == True){
+						keep_looping1 := 0
+						sleep, 1000
+					}
+					if (state1 == "U"){
+						up1 := True
+					}
 				}
-				if (state1 == "U"){
-					up1 := True
+			} else {
+				while (keep_looping1 == 1 && stop == False)
+				{
+					mouseclick, right, , , %clicktype2%
+					random, y, %MinSleep1%, %MaxSleep1%
+					sleep, %y%
+					getkeystate, state1, %button1%
+					if (state1 == "D" && up == True){
+						keep_looping1 := 0
+						sleep, 1000
+					}
+					if (state1 == "U"){
+						up1 := True
+					}
 				}
 			}
 		}
@@ -389,10 +529,18 @@ Start:
 	buttonhotkey2:
 		global stop
 		if (toggle == 0){
-			While GetKeyState(button2, "P"){
-				mouseclick, middle, , , %clicktype3%
-				random, z, %MinSleep2%, %MaxSleep2%
-				sleep, %z%
+			if (ghost_clicking = 1){
+				While GetKeyState(button2, "P"){
+					ControlClick,x%X1% y%Y1%,%Target_Window%,,MIDDLE,%clicktype3%, NA x%X1% y%Y1%
+					random, z, %MinSleep2%, %MaxSleep2%
+					sleep, %z%
+				}
+			} else {
+				While GetKeyState(button2, "P"){
+					mouseclick, middle, , , %clicktype3%
+					random, z, %MinSleep2%, %MaxSleep2%
+					sleep, %z%
+				}
 			}
 		}
 		else if (toggle == 1){
@@ -405,35 +553,72 @@ Start:
 			else {
 				keep_looping2 := 0
 				}
-			while (keep_looping2 == 1 && stop == False)
-			{
-				mouseclick, middle, , , %clicktype3%
-				random, z, %MinSleep2%, %MaxSleep2%
-				sleep, %z%
-				getkeystate, state2, %button2%
-				if (state2 == "D" && up == True){
-					keep_looping2 := 0
-					sleep, 1000
+			if (ghost_clicking = 1){
+				while (keep_looping2 == 1 && stop == False)
+				{
+					ControlClick,x%X1% y%Y1%,%Target_Window%,,MIDDLE,%clicktype3%, NA x%X1% y%Y1%
+					random, z, %MinSleep2%, %MaxSleep2%
+					sleep, %z%
+					getkeystate, state2, %button2%
+					if (state2 == "D" && up == True){
+						keep_looping2 := 0
+						sleep, 1000
+					}
+					if (state2 == "U"){
+						up2 := True
+					}
 				}
-				if (state2 == "U"){
-					up2 := True
+			} else {
+				while (keep_looping2 == 1 && stop == False)
+				{
+					mouseclick, middle, , , %clicktype3%
+					random, z, %MinSleep2%, %MaxSleep2%
+					sleep, %z%
+					getkeystate, state2, %button2%
+					if (state2 == "D" && up == True){
+						keep_looping2 := 0
+						sleep, 1000
+					}
+					if (state2 == "U"){
+						up2 := True
+					}
 				}
 			}
 		}
 		return
+Get_Click_Pos(ByRef X,ByRef Y)
+    {
+	Pressed:=0
+	Loop
+	{
+		Left_Mouse := GetKeyState("LButton")
+		MouseGetPos,X,Y,
+		ToolTip, Select click position
+		if(Left_Mouse == False && Pressed == 0)
+			Pressed:=1
+		else if(Left_Mouse == True && Pressed == 1)
+		{
+			MouseGetPos,X,Y,
+			ToolTip,
+			break
+		}
+		sleep, 25
+	}
+}  
 Set_Window(Target_Window)
 {
-	isPressed :=0
-	i := 0
+	Pressed :=0
+	i1 := 0
 	loop, {
 		tooltip, Double click a window to select
-		Left_Mouse:=GetKeyState("LButton")
-		if(Left_Mouse==False&&isPressed==0)
-			isPressed:=1
-		else if(Left_Mouse==True&&isPressed==1)
+		Left_Mouse := GetKeyState("LButton")
+		if(Left_Mouse==False && Pressed==0)
+			Pressed:=1
+		else if(Left_Mouse==True && Pressed==1)
 		{
-			i++,isPressed:=0
-			if(i>=2)
+			i1++
+			Pressed:=0
+			if(i1>=2)
 			{
 				WinGetTitle,Target_Window,A
 				ToolTip
@@ -446,7 +631,7 @@ Set_Window(Target_Window)
 }
 move_ghost_window()
 	{
-		ifwinexist, Ghost Window
+		ifwinexist, Super Secret Ghost Window Very Stealth TeeHee
 			{	
 				wingetpos, x1, y1, , ,A 
 				x2 :=x1 + ghost_window_offsetx
@@ -457,5 +642,8 @@ move_ghost_window()
 }
 
 ;^p::Pause
-^p::Suspend
+^p::
+	suspend, toggle
+	pause, toggle
+	return
 ^esc::exitapp
