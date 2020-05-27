@@ -111,24 +111,30 @@ ghost_mode:
 		gui,2:Destroy 
 		wingetpos, x1, y1, , , A 
 		gui,2:+alwaysontop -caption +owner1
-		Gui,2:add,Edit,xm+80 ym+1 w220 h21  vTarget_Window ,% Target_Window
-		Gui,2:add,Edit,xm+80 ym+30 w220 h21  vPos_1 ,% Pos_1
+		Gui,2:add,Edit,xm+80 ym+1 w220 h21  vTarget_Window ,
+		Gui,2:add,Edit,xm+80 ym+30 w220 h21  vPos_1 ,
 		gui,2:add, button, x10 ym+0 gset_window, Set Window
 		gui,2:add, button, x10 ym+30 w70 gset_pos, Set Pos
 		Gui,2:add,Button,xm+319 ym+0 w61 gUpdate_Window,Update
 		Gui,2:add,Button,xm+380 ym+0 w61 gClear_Target_Window,Clear
 		Gui,2:add,Button,xm+319 ym+30 w122 gClear_Pos,Clear
-		Gui,2:add,Button,xm+250 ym+75 w122 gmovemouse,move mouse
 		Gui,2:add,Button,xm+0 ym+90 w122 gHide_Window,Hide/Show Window
 		Gui,2:add, checkbox, x10 ym+65 checked vhidewin gHide_Window_Hotkey, Show/Hide Ctrl + H
 		Gui,2:add, checkbox, x+10 ym+65 vghost_clicking gGhost_Clicking_Toggle, Enable Ghost Clicking
 		
 		gui,2:show, % "x" x1+ghost_window_offsetx "y" y1+ghost_window_offsety "w"+ghost_window_width "h"+ ghost_window_height, Super Secret Ghost Window Very Stealth TeeHee
-		ghost_mode_active := True
+		;ghost_mode_active := True
 		}
 	if(ghost_mode==0)
 		gui,2:Destroy
-		ghost_mode_active := False
+		X1 := null 
+		Y1 := null
+		ghost_clicking := 0
+		guicontrol,, Pos_1, %X1%   %Y1%
+		Target_Window := null 
+		guicontrol,, Target_Window, % Target_Window
+		guicontrol,, Pos_1, %X1%   %Y1%
+		
 	return
 set_pos:
     Get_Click_Pos(X1,Y1)       
@@ -211,10 +217,6 @@ Clear_Pos:
 	X1 := null 
 	Y1 := null
 	guicontrol,, Pos_1, %X1%   %Y1%  
-	return
-movemouse:
-	Gui,2:Submit,NoHide
-	ControlClick,x%X1% y%Y1%,%Target_Window%,,,, NA x%X1% y%Y1%
 	return
 MinSleep:
 	gui, 1:submit, nohide
@@ -355,14 +357,32 @@ Stop:
 	guicontrol,1:enable, MinSleep2
 	guicontrol,1:enable, MaxSleep2
 	guicontrol,1:enable, toggle
-
+	guicontrol,1:enable, ghost_mode
 	stop = True
+	if button = Left
+		button = LButton
+	if button = Right
+		button = RButton
+	if button = Middle
+		button = MButton
+	if button1 = Left
+		button1 = LButton
+	if button1 = Right
+		button1 = RButton
+	if button1 = Middle
+		button1 = MButton
+	if button2 = Left
+		button2 = LButton
+	if button2 = Right
+		button2 = RButton
+	if button2 = Middle
+		button2 = MButton
 	if button != None
-		hotkey, *~$%button%, buttonhotkey, *~$ off
+		hotkey, *$%button%, buttonhotkey, *~$ off
 	if button1 != None
-		hotkey, *~$%button1%, buttonhotkey1, *~$ off
+		hotkey, *$%button1%, buttonhotkey1, *~$ off
 	if button2 != None
-		hotkey, *~$%button2%, buttonhotkey2, *~$ off
+		hotkey, *$%button2%, buttonhotkey2, *~$ off
 	guicontrol,1:disable, stp
 	return
 
@@ -385,6 +405,7 @@ Start:
 	guicontrol,1:disable, MinSleep2
 	guicontrol,1:disable, MaxSleep2
 	guicontrol,1:disable, toggle
+	guicontrol,1:disable, ghost_mode
 	if(Hide_On_Start==1)
 		WinMinimize, A
 	if clicktype1 = Single
@@ -399,12 +420,30 @@ Start:
 		clicktype3 := 1
 	if clicktype3 = Double 
 		clicktype3 := 2
+	if button = Left
+		button = LButton
+	if button = Right
+		button = RButton
+	if button = Middle
+		button = MButton
+	if button1 = Left
+		button1 = LButton
+	if button1 = Right
+		button1 = RButton
+	if button1 = Middle
+		button1 = MButton
+	if button2 = Left
+		button2 = LButton
+	if button2 = Right
+		button2 = RButton
+	if button2 = Middle
+		button2 = MButton
 	if button != None
-		hotkey, *~$%button%, buttonhotkey,  on
+		hotkey, *$%button%, buttonhotkey,  on
 	if button1 != None
-		hotkey, *~$%button1%, buttonhotkey1,  on
+		hotkey, *$%button1%, buttonhotkey1,  on
 	if button2 != None
-		hotkey, *~$%button2%, buttonhotkey2,  on
+		hotkey, *$%button2%, buttonhotkey2,  on
 
 	buttonhotkey:
 		global stop
