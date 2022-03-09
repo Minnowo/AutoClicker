@@ -1,6 +1,5 @@
 ﻿/*	;Notes
 	Written By: Minnowo 
-	Discord: https://discord.gg/Y6us9tk
 	Date Started: May 19th, 2020
 	Date Of Last Edit: May 24th, 2020
 	Description: This is an on hold autoclicker maximum click speed is ~2400cps
