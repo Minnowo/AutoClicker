@@ -17,6 +17,9 @@ SetTitleMatchMode, 2
 
 onmessage(0x232, "move_ghost_window")
 Target_Window:=null
+
+originalContext := DllCall("SetThreadDpiAwarenessContext", "ptr", -3, "ptr")
+
 Gui, +alwaysontop
 Gui, 1:add, text, x10 y20 , Mouse Button
 Gui, 1:add, text, x90 y20 , Hold Button
