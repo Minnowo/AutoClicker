@@ -1,5 +1,5 @@
 ﻿/*	;Notes
-	Written By: Minnowo 
+	Written By: Alice Nyaa 
 	Date Started: May 19th, 2020
 	Date Of Last Edit: May 24th, 2020
 	Description: This is an on hold autoclicker maximum click speed is ~2400cps
@@ -18,7 +18,9 @@ SetTitleMatchMode, 2
 onmessage(0x232, "move_ghost_window")
 Target_Window:=null
 
+
 originalContext := DllCall("SetThreadDpiAwarenessContext", "ptr", -3, "ptr")
+
 
 Gui, +alwaysontop
 Gui, 1:add, text, x10 y20 , Mouse Button
@@ -37,9 +39,9 @@ Gui, 1:Add, CheckBox, x+10 y0 vtoggle gToggle, Toggle
 Gui, 1:add, text, x+10 y0, Ctrl+P Pause
 Gui, 1:add, text, x+10 y0, Ctrl+Esc Exit
 
-Gui, 1:add, dropdownlist, xm+80 ym+30 w100 r10 vButton gFirstButton, None||Left|Right|Middle|xButton1|xButton2|
-Gui, 1:add, dropdownlist, xm+80 ym+60 w100 r10 vButton1 gSecondButton, None||Left|Right|Middle|xButton1|xButton2|
-Gui, 1:add, dropdownlist, xm+80 ym+90 w100 r10 vButton2 gThirdButton, None||Left|Right|Middle|xButton1|xButton2|
+Gui, 1:add, dropdownlist, xm+80 ym+30 w100 r10 vButton gFirstButton, None||Left|Right|Middle|xButton1|xButton2|0|9|8|7|6|5|4|3|2|1|a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|
+Gui, 1:add, dropdownlist, xm+80 ym+60 w100 r10 vButton1 gSecondButton, None||Left|Right|Middle|xButton1|xButton2|0|9|8|7|6|5|4|3|2|1|a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|
+Gui, 1:add, dropdownlist, xm+80 ym+90 w100 r10 vButton2 gThirdButton, None||Left|Right|Middle|xButton1|xButton2|0|9|8|7|6|5|4|3|2|1|a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|
 Gui, 1:add, dropdownlist, xm+200 ym+30 w100 r10 vClicktype1 gFirstButtonclicktype, Single||Double|
 Gui, 1:add, dropdownlist, xm+200 ym+60 w100 r10 vClicktype2 gSecondButtonclicktype, Single||Double|
 Gui, 1:add, dropdownlist, xm+200 ym+90 w100 r10 vClicktype3 gThirdButtonclicktype, Single||Double|
@@ -480,7 +482,11 @@ Start:
 	if button2 = Middle
 		button2 = MButton
 	if button != None
-		hotkey, *$%button%, buttonhotkey,  on
+		if (%button% = LButton){
+			hotkey, *~$%button%, buttonhotkey,  on
+		} else {
+			hotkey, *$%button%, buttonhotkey,  on
+		}
 	if button1 != None
 		hotkey, *$%button1%, buttonhotkey1,  on
 	if button2 != None
