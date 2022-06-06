@@ -1,11 +1,9 @@
 ﻿/*	;Notes
 	Written By: Alice Nyaa 
 	Date Started: May 19th, 2020
-	Date Of Last Edit: May 24th, 2020
-	Description: This is an on hold autoclicker maximum click speed is ~2400cps
-				activation hotkeys are mouse only at current time 
-				will add a toggle
-	*/
+	Date Of Last Edit: 2022-06-06
+*/
+
 #singleinstance, force
 setBatchLines -1
 SetMouseDelay,-1
@@ -68,8 +66,8 @@ Gui, 1:add, button, x+0 ym+120 w25 h20 gseconds5, 5s
 
 widthspawn := A_screenwidth-548
 heightspawn:= A_screenheight-652
-;Gui, 1:show, x%widthspawn% y%heightspawn% w500 h169, AutoClicker - By Minnowo
-Gui, 1:show, w500 h169, AutoClicker - By Minnowo
+;Gui, 1:show, x%widthspawn% y%heightspawn% w500 h169, AutoClicker - OwO Clicking!!??!
+Gui, 1:show, w500 h169, AutoClicker - OwO Clicking!!??!
 guicontrol,1:disable, stp
 guicontrol,1:disable, tmr
 clicktype1 = 1
@@ -96,25 +94,31 @@ return
 GuiClose:
 	Exitapp
 	return
+
 Reload:
     Reload
+
 set_window:
 	Target_Window:=Set_Window(Target_Window)
     GuiControl,,Target_Window,% Target_Window 
 	return
+
 Always_On_Top:         
 	Gui, 1:Submit, NoHide
 	if(Always==1)
-			Gui, 1:+AlwaysOnTop
+        Gui, 1:+AlwaysOnTop
 	if(Always==0)
-			Gui, 1:-AlwaysOnTop
+        Gui, 1:-AlwaysOnTop
 	return
+
 Hide_When_Started:
 	Gui, 1:Submit, NoHide
 	return
+
 ghost_mode:
 	Gui, 1:Submit, NoHide
-	if(ghost_mode==1){
+	if(ghost_mode == 1)
+    {
 		gui,2:Destroy 
 		wingetpos, x1, y1, , , A 
 		gui,2:+alwaysontop -caption +owner1
@@ -126,52 +130,78 @@ ghost_mode:
 		Gui,2:add,Button,xm+380 ym+0 w61 gClear_Target_Window,Clear
 		Gui,2:add,Button,xm+199 ym+30 w122 gClear_Pos,Clear
 		Gui,2:add,Button,xm+0 ym+90 w122 gHide_Window,Hide/Show Window
-		if (hidewin == 1){
+
+		if (hidewin == 1)
+        {
 			Gui,2:add, checkbox, x11 ym+65 checked vhidewin gHide_Window_Hotkey, Ctrl+H Show/HideWindow
-		} else {
+		} 
+        else 
+        {
 			Gui,2:add, checkbox, x10 ym+65 vhidewin gHide_Window_Hotkey, Ctrl+H Show/HideWindow
 		}
-		if (background_hotkey == 1){
+
+		if (background_hotkey == 1)
+        {
 			Gui,2:add, checkbox, x+10 ym+65 checked vbackground_hotkey gRun_As_Background, Ctrl+O RunAsBackground
-		} else {
+		} 
+        else 
+        {
 			Gui,2:add, checkbox, x+10 ym+65 vbackground_hotkey gRun_As_Background, Ctrl+O RunAsBackground
 		}
-		if (ghost_clicking == 1){
+
+		if (ghost_clicking == 1)
+        {
 			Gui,2:add, checkbox, x+10 ym+65 checked vghost_clicking gGhost_Clicking_Toggle, EnableGhostClicking
-		} else {
+		} 
+        else 
+        {
 			Gui,2:add, checkbox, x+10 ym+65 vghost_clicking gGhost_Clicking_Toggle, EnableGhostClicking
 		}
+
 		gui, 2:add, text,xm+132 ym+95, You Must Set A Window And Position For Ghost Clicking To Work
 		gui,2:show, % "x" x1+ghost_window_offsetx "y" y1+ghost_window_offsety "w"+ghost_window_width "h"+ ghost_window_height, Super Secret Ghost Window Very Stealth TeeHee
 		;ghost_mode_active := True
-		}
-	if(ghost_mode==0)
+    }
+	
+    if(ghost_mode==0)
 		gui,2:Destroy
 		
 	return
+
+
 set_pos:
     Get_Click_Pos(X_1,Y_1)       
     GuiControl,,Pos_1,%X_1%   %Y_1%  
     return
+
 Run_As_Background:
 	Gui, 2:Submit, NoHide 
-	if (background_hotkey == 1){
+	if (background_hotkey == 1)
+    {
 		hotkey, ^o, run_background_hotkey,  on
 	}
-	if (background_hotkey == 0){
+
+	if (background_hotkey == 0)
+    {
 		hotkey, ^o, run_background_hotkey,  off
 	}
 	return
+
 run_background_hotkey:
-	WinGet, Style, Style,  AutoClicker - By Minnowo 
-	If (Style & 0x10000000){
-		WinHide, AutoClicker - By Minnowo
+	WinGet, Style, Style,  AutoClicker - OwO Clicking!!??! 
+	If (Style & 0x10000000)
+    {
+		WinHide, AutoClicker - OwO Clicking!!??!
+
 		ifwinexist, Super Secret Ghost Window Very Stealth TeeHee 
 		{
 			WinHide, Super Secret Ghost Window Very Stealth TeeHee
 		}				
-	} else {
-		WinShow, AutoClicker - By Minnowo
+	} 
+    else 
+    {
+		WinShow, AutoClicker - OwO Clicking!!??!
+
 		ifwinexist, Super Secret Ghost Window Very Stealth TeeHee 
 		{
 			WinShow, Super Secret Ghost Window Very Stealth TeeHee
@@ -181,168 +211,251 @@ run_background_hotkey:
 Ghost_Clicking_Toggle:
 	Gui, 2:Submit, NoHide 
     return
+
 Hide_Window:
 	WinGet, Style, Style,  %Target_Window% 
-	a = AutoClicker - By Minnowo
-	if (Target_Window = a){
-		If (Style & 0x10000000){
-			if(Target_Window!=null)
+
+	a = AutoClicker - OwO Clicking!!??!
+
+	if (Target_Window = a)
+    {
+		If (Style & 0x10000000)
+        {
+			if(Target_Window != null)
 				WinHide,%Target_Window%
-				ifwinexist, Super Secret Ghost Window Very Stealth TeeHee 
-				{
-					WinHide, Super Secret Ghost Window Very Stealth TeeHee
-				}
-		} else {
-			if(Target_Window!=null)
+
+            ifwinexist, Super Secret Ghost Window Very Stealth TeeHee 
+            {
+                WinHide, Super Secret Ghost Window Very Stealth TeeHee
+            }
+		} 
+        else 
+        {
+			if(Target_Window != null)
 				WinShow,%Target_Window%
-				ifwinexist, Super Secret Ghost Window Very Stealth TeeHee 
-				{
-					WinShow, Super Secret Ghost Window Very Stealth TeeHee
-				}
+
+            ifwinexist, Super Secret Ghost Window Very Stealth TeeHee 
+            {
+                WinShow, Super Secret Ghost Window Very Stealth TeeHee
+            }
 		}
-	} else {
+	} 
+    else 
+    {
 		WinGet, Style, Style,  %Target_Window%
-		If (Style & 0x10000000){
+		If (Style & 0x10000000)
+        {
 			if(Target_Window!=null)
 				WinHide,%Target_Window%
-		} else {
+		} 
+        else 
+        {
 			if(Target_Window!=null)
 				WinShow,%Target_Window%
 		}
 	}
 	return
+
+
 Hide_Window_Hotkey:
 	Gui, 2:Submit, NoHide
-	if (hidewin == 1){
+
+	if (hidewin == 1)
+    {
 		hotkey, ^h, hide_win_hotkey,  on
 	}
-	if (hidewin == 0){
+
+	if (hidewin == 0)
+    {
 		hotkey, ^h, hide_win_hotkey,  off
 	}
 	return
+
 hide_win_hotkey:
 	WinGet, Style, Style,  %Target_Window% 
-	a = AutoClicker - By Minnowo
-	if (Target_Window = a){
-		If (Style & 0x10000000){
+	a = AutoClicker - OwO Clicking!!??!
+	if (Target_Window = a)
+    {
+		If (Style & 0x10000000)
+        {
 			if(Target_Window!=null)
 				WinHide,%Target_Window%
 				WinHide, Super Secret Ghost Window Very Stealth TeeHee
-		} else {
+		} 
+        else 
+        {
 			if(Target_Window!=null)
 				WinShow,%Target_Window%
 				WinShow, Super Secret Ghost Window Very Stealth TeeHee
 		}
-	} else {
+	} 
+    else 
+    {
 		WinGet, Style, Style,  %Target_Window%
-		If (Style & 0x10000000){
+		If (Style & 0x10000000)
+        {
 			if(Target_Window!=null)
 				WinHide,%Target_Window%
-		} else {
+		} 
+        else 
+        {
 			if(Target_Window!=null)
 				WinShow,%Target_Window%
 		}
 	}
 	
 	return
+
+
 Toggle:
 	Gui,1:Submit,NoHide
 	return
+
+
 Update_Window:
     Gui,Submit,NoHide
     return
+
+
 Clear_Target_Window:
 	Gui,2:Submit,NoHide
 	Target_Window := null 
 	guicontrol,, Target_Window, % Target_Window
 	return
+
+
 Clear_Pos:
 	Gui,2:Submit,NoHide
 	X_1 := null 
 	Y_1 := null
 	guicontrol,, Pos_1, %X_1%   %Y_1%  
 	return
+
+
 MinSleep:
 	gui, 1:submit, nohide
 	MinSleep = % MinSleep
 	return
+
+
 MaxSleep:
 	gui, 1:submit, nohide
 	MaxSleep = % MaxSleep
 	return
+
+
 MinSleep1:
 	gui, 1:submit, nohide
 	MinSleep1 = % MinSleep1
 	return
+
+
 MaxSleep1:
 	gui, 1:submit, nohide
 	MaxSleep1 = % MaxSleep1
 	return
+
+
 MinSleep2:
 	gui, 1:submit, nohide
 	MinSleep2 = % MinSleep2
 	return
+
+
 MaxSleep2:
 	gui, 1:submit, nohide
 	MaxSleep2 = % MaxSleep2
 	return
 
+
 FirstButton:
 	gui, 1:submit, nohide
 	button =  % Button
+
 	if button = Left
 		button = LButton
+
 	if button = Right
 		button = RButton
+
 	if button = Middle
 		button = MButton
+
 	return
 	
+
 SecondButton:
 	gui, 1:submit, nohide
 	button1 = % Button1
+
+    ; god i really love ahk syntax, what is this 
+
 	if button1 = Left
 		button1 = LButton
+
 	if button1 = Right
 		button1 = RButton
+
 	if button1 = Middle
 		button1 = MButton
+
 	return
+
+
 ThirdButton:
 	gui, 1:submit, nohide
 	button2 = % Button2
+
 	if button2 = Left
 		button2 = LButton
+
 	if button2 = Right
 		button2 = RButton
+
 	if button2 = Middle
 		button2 = MButton
+
 	return
+
 
 FirstButtonclicktype:
 	gui, 1:submit, nohide
 	clicktype1 := % Clicktype1
+
 	if clicktype1 = Single
 		clicktype1 := 1
+
 	if clicktype1 = Double 
 		clicktype1 := 2
+
 	return
+
+
 SecondButtonclicktype:
 	gui, 1:submit, nohide
 	clicktype2 = % Clicktype2
+
 	if clicktype2 = Single
 		clicktype2 := 1
+
 	if clicktype2 = Double 
 		clicktype2 := 2
+
 	return
+
+
 ThirdButtonclicktype:
 	gui, 1:submit, nohide
 	clicktype3 = % Clicktype3
+
 	if clicktype3 = Single
 		clicktype3 := 1
+
 	if clicktype3 = Double 
 		clicktype3 := 2
+
 	return
+
 
 seconds1:
 	guicontrol,1:enable, tmr
@@ -350,44 +463,60 @@ seconds1:
 	second5 := False
 	second1 := True
 	return
+
+
 seconds5:
 	guicontrol,1:enable, tmr
 	time := -5000
 	second5 := True
 	second1 := False
 	return
+
+
 onclick:
 	totalclicks += 1
-	if (timeron = False){
+	if (timeron = False)
+    {
 		;tooltip, start timer
 		SetTimer, timerstop, %time%
 		timeron := True
-		}
+    }
 	return
+
+
 RemoveToolTip:
 	totalclicks := 0
 	ToolTip
 	return
 
+
 timerstop:
 	;tooltip, %second1% %second5%
 	guicontrol,1:disable, tmr
-	if(Always==1)
+
+	if(Always == 1)
 		alwaystop := 262144
-	if(Always==0)
+
+	if(Always == 0)
 		alwaystop := 0
+
 	stop := True
 	suspend, on
+
 	if second1 = 1
 		msgbox, % alwaystop ,Hotkeys are suspended while this is open, % totalclicks " Clicks/Second", 10
+
 	if second5 = 1
 		msgbox, % alwaystop ,Hotkeys are suspended while this is open, % totalclicks " Clicks In 5 Seconds Or " totalclicks // 5 " CPS", 10
+
 	suspend, off
 	stop := False
 	timeron := False
 	totalclicks := 0
 	guicontrol,1:enable, tmr
 	return
+
+
 Stop:
 	guicontrol,1:enable, str
 	guicontrol,1:enable, button
@@ -428,6 +557,7 @@ Stop:
 		hotkey, *$%button2%, buttonhotkey2, *~$ off
 	guicontrol,1:disable, stp
 	return
+
 
 Start:
 	global stop
@@ -482,15 +612,22 @@ Start:
 	if button2 = Middle
 		button2 = MButton
 	if button != None
-		if (%button% = LButton){
+		if (%button% = LButton)
+        {
 			hotkey, *~$%button%, buttonhotkey,  on
-		} else {
+		} 
+        else 
+        {
 			hotkey, *$%button%, buttonhotkey,  on
 		}
+
 	if button1 != None
 		hotkey, *$%button1%, buttonhotkey1,  on
 	if button2 != None
 		hotkey, *$%button2%, buttonhotkey2,  on
+
+    ; i wrote this before i knew what / how to use functions
+    ; this is a big mess god, and yes, i'm aware that i used functions at the bottom of the script
 
 	buttonhotkey:
 		global stop
@@ -672,8 +809,10 @@ Start:
 			}
 		}
 		return
+
+
 Get_Click_Pos(ByRef X,ByRef Y)
-    {
+{
 	Pressed:=0
 	Loop
 	{
@@ -691,11 +830,14 @@ Get_Click_Pos(ByRef X,ByRef Y)
 		sleep, 25
 	}
 }  
+
+
 Set_Window(Target_Window)
 {
 	Pressed :=0
 	i1 := 0
-	loop, {
+	loop, 
+    {
 		tooltip, Double click a window to select
 		Left_Mouse := GetKeyState("LButton")
 		if(Left_Mouse==False && Pressed==0)
@@ -715,21 +857,24 @@ Set_Window(Target_Window)
 	}
 	return Target_Window   
 }
-move_ghost_window()
-	{
-		ifwinexist, Super Secret Ghost Window Very Stealth TeeHee
-			{	
-				wingetpos, x1, y1, , ,A 
-				x2 :=x1 + ghost_window_offsetx
-				y2 :=y1 + ghost_window_offsety 
-				gui,2:show, % "x" + x2 "y" + y2
 
-			}
+
+move_ghost_window()
+{
+    ifwinexist, Super Secret Ghost Window Very Stealth TeeHee
+    {	
+        wingetpos, x1, y1, , ,A 
+        x2 :=x1 + ghost_window_offsetx
+        y2 :=y1 + ghost_window_offsety 
+        gui,2:show, % "x" + x2 "y" + y2
+
+    }
 }
 
-;^p::Pause
+
 ^p::
 	suspend, toggle
 	pause, toggle
 	return
+
 ^esc::exitapp
